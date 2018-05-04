@@ -10,10 +10,11 @@ var gulp         = require('gulp'),
     svgstore     = require('gulp-svgstore'),
     inject       = require('gulp-inject'),
     fileinclude  = require('gulp-file-include');
+    concat       = require('gulp-concat');
 
 gulp.task('fileinclude', function() {
     gulp.src([
-        'app/view/index.html'
+        'app/view/*.html'
         ])
         .pipe(fileinclude({
         prefix: '@@',
@@ -37,14 +38,11 @@ gulp.task('svgstore', function () {
         .pipe(gulp.dest('app/view/assets'));
 });
 
-// ------------pug---------
-
 gulp.task('sass', function() {
     return gulp.src('app/view/**/*.scss')
         .pipe(sass())
-        .pipe(autoprefixer(['last 15 versions', '> 1%', 'ie 8', 'ie 7'], { cascade: true }))
-        .pipe(rename({suffix: '.min'}))
         .pipe(minifycss())
+        .pipe(concat('all.css'))
         .pipe(gulp.dest('app/css'))
         .pipe(browserSync.reload({stream: true}))
 });
@@ -78,11 +76,11 @@ gulp.task('scripts', ['common-js'], function() {
 });
 
 gulp.task('watch', ['browser-sync'], function() {
-    gulp.watch('app/view/index.html', ['fileinclude', browserSync.reload]);
+    gulp.watch('app/view/*.html', ['fileinclude', browserSync.reload]);
     gulp.watch('app/view/**/*.scss', ['sass']);
     gulp.watch('app/*.html', browserSync.reload);
     gulp.watch('app/view/**/*.html', ['fileinclude', browserSync.reload]);
-    gulp.watch('app/view/**/*.js', ['scripts', browserSync.reload]);
+    gulp.watch('app/js/**/*.js', ['scripts', browserSync.reload]);
 });
 
 gulp.task('build', ['sass', 'scripts'], function() {
