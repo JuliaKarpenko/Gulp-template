@@ -39,7 +39,7 @@ gulp.task('svgstore', function () {
 });
 
 gulp.task('sass', function() {
-    return gulp.src('app/view/**/*.scss')
+    return gulp.src('app/view/*.scss')
         .pipe(sass())
         .pipe(minifycss())
         .pipe(concat('all.css'))
